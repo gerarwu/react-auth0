@@ -1,25 +1,41 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+//import logo from './logo.svg';
 import './App.css';
+import auth from './auth/service';
+import Shoes from './components/Shoes';
+import Wear from './components/Wear';
 
 class App extends Component {
+
+  constructor(props){
+    super(props);
+
+    auth.loginCallback = this.loggedIn.bind(this);
+    auth.logoutCallback = this.loggedOut.bind(this);
+
+    this.state = { loggedIn: false };
+  }
+
+  loggedIn(){
+    console.log("loggedIn", true);
+    this.setState({ loggedIn: true });
+  }
+
+  loggedOut(){
+    this.setState({ loggedIn: false });
+  }
+
+
   render() {
+    console.log(this.state);
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+      <div>
+        { this.state.loggedIn ? <Shoes /> : <Wear /> }
+        { this.state.loggedIn ? 
+          ( <button onClick={()=> auth.logout()} >Log Out</button> ) 
+          : 
+          ( <button onClick={()=> auth.login()} >Log In</button> ) 
+        }
       </div>
     );
   }
